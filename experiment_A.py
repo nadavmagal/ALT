@@ -16,7 +16,6 @@ def experiment_A(mnist_data_set, binary_problems, optimization):
 
 def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name):
     num_of_pixels = 28 * 28
-    model = LinearModel(dim=num_of_pixels)
 
     w = torch.randn(num_of_pixels)  # initialization
     opt = Optimizer(w, lr=LR)
