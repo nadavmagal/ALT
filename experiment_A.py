@@ -7,6 +7,7 @@ NUM_OF_ITERATION = 10
 NUM_OF_EPOCHES = 1000
 LR = 0.1
 
+
 def experiment_A(mnist_data_set, binary_problems, optimization):
     for cur_binary_problem in binary_problems:
         for cur_optimization in optimization:
@@ -14,19 +15,61 @@ def experiment_A(mnist_data_set, binary_problems, optimization):
                 run_single_experiment(mnist_data_set, cur_binary_problem, cur_optimization)
 
 
+def tag_odd_even(labels):
+    labels = labels % 2
+    return labels
+
+
+def tag_is_big_from_5(labels):
+    labels = 3
+    return None
+
+
+def tag_bd_date(labels):
+    labels = 3
+    return None
+
+
 def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name):
     num_of_pixels = 28 * 28
 
     w = torch.randn(num_of_pixels)  # initialization
-    opt = Optimizer(w, lr=LR)
 
     data_loader = torch.utils.data.DataLoader(mnist_data_set, batch_size=70000, shuffle=True)
+
+    tagging_method = which_tagging_method(binary_problem_name)
+
+
+    opt = which_opt(optimization_name, w)
+
 
     for e in range(NUM_OF_EPOCHES):
         for samples, labels in data_loader:
             samples = samples.view(-1, num_of_pixels)
-            labels = labels % 2
+            labels = tagging_method(labels)
             labels[labels < 1] = -1
             outputs = samples @ w
             w, loss = opt.step(outputs, labels, samples)
             print('loss = {}'.format(loss))
+
+
+def which_opt(optimization_name, w):
+    if optimization_name == 'gd':
+        opt = Optimizer(w, lr=LR)
+    elif optimization_name == 'constrained_gd':
+        opt = Optimizer(w, lr=LR)
+    elif optimization_name == 'regularized_gd':
+        opt = Optimizer(w, lr=LR)
+    elif optimization_name == 'sgd':
+        opt = Optimizer(w, lr=LR)
+    return opt
+
+
+def which_tagging_method(binary_problem_name):
+    if binary_problem_name == 'odd_even':
+        tagging_method = tag_odd_even
+    elif binary_problem_name == 'is_big_from_5':
+        tagging_method = tag_is_big_from_5
+    elif binary_problem_name == 'is_in_my_bd_date':
+        tagging_method = tag_bd_date
+    return tagging_method
