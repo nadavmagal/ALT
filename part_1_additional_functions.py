@@ -22,6 +22,7 @@ def get_mnist_data(mnist_data_fp):
     data_set = torch.utils.data.ConcatDataset(combined_dataset)
     return data_set
 
+
 # TODO: maybe
 class Optimizer:
     def __init__(self, w, lr, K=None, reg=0.0):
@@ -45,6 +46,7 @@ class Optimizer:
             w = w.clamp(min=-self.K, max=self.K)
         self.w = w
         return w, l
+
 
 # TODO: maybe
 class HingeLoss:

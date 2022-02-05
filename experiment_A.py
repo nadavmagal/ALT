@@ -57,11 +57,16 @@ def which_opt(optimization_name, w):
     if optimization_name == 'gd':
         opt = Optimizer(w, lr=LR)
     elif optimization_name == 'constrained_gd':
-        opt = Optimizer(w, lr=LR)
+        # todo: make sure k=1 is alright and maybe change it
+        opt = Optimizer(w, lr=LR, K=1)
     elif optimization_name == 'regularized_gd':
-        opt = Optimizer(w, lr=LR)
+        opt = Optimizer(w, lr=LR, reg=0.035)
     elif optimization_name == 'sgd':
         opt = Optimizer(w, lr=LR)
+    else:
+        print(f'optimization name invalid - {optimization_name}\n'
+              f'The options are - [gd, constrained_gd, regularized_gd, sgd]')
+        return None
     return opt
 
 
