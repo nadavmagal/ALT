@@ -21,13 +21,15 @@ def tag_odd_even(labels):
 
 
 def tag_is_big_from_5(labels):
-    labels = 3
-    return None
+    labels[labels >= 5] = 1
+    labels[labels < 5] = 0
+    return labels
 
 
 def tag_bd_date(labels):
-    labels = 3
-    return None
+    labels[(labels == 3) | (labels == 1) | (labels == 9) | (labels == 0)] = 1
+    labels[labels != 1] = 0
+    return labels
 
 
 def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name):
