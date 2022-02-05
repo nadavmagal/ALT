@@ -13,6 +13,7 @@ def main():
     mnist_data_set = get_mnist_data(mnist_data_fp)
 
     experiment_A(mnist_data_set, binary_problems, optimization)
+    # experiment_B(mnist_data_set, binary_problems, optimization)
 
     return
 

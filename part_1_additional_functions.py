@@ -82,4 +82,4 @@ class LinearModel(nn.Module):
     def forward(self, X):
         # X is [m,d]
         # m - batch size, d - sample size
-        return X @ self.w
+        return X @ self
