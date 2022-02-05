@@ -1,19 +1,39 @@
 import numpy as np
+# import matplotlib
+# matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 from part_1_additional_functions import *
-import time
+import os
+from datetime import datetime
 
 NUM_OF_ITERATION = 10
-NUM_OF_EPOCHES = 1000
+NUM_OF_EPOCHES = 10
 LR = 0.1
 
 
 def experiment_A(mnist_data_set, binary_problems, optimization):
+
+    curr_time_str = datetime.now().strftime("%m.%d.%Y.%H.%M")
+    output_dir = './output'
+    output_curr_time_dir = os.path.join(output_dir, curr_time_str)
+    os.makedirs(output_dir, exist_ok=True)
+    os.makedirs(output_curr_time_dir)
+
     for cur_binary_problem in binary_problems:
+        print(f'========= starting work on binary problem: {cur_binary_problem} =============')
         for cur_optimization in optimization:
+            print(f'--------------- optimization: {cur_optimization} ---------------')
+            losses_per_optimiation_method = np.zeros((NUM_OF_ITERATION, NUM_OF_EPOCHES))
             for ii in range(NUM_OF_ITERATION):
+                print(f'--> iteration number {ii + 1}:')
                 train_set, test_set = torch.utils.data.random_split(mnist_data_set, [60000, 10000])
-                run_single_experiment(train_set, cur_binary_problem, cur_optimization)
+                losses, w = run_single_experiment(train_set, cur_binary_problem, cur_optimization)
+                losses_per_optimiation_method[ii, :] = np.array(losses)
+
+            average_losses = np.mean(losses_per_optimiation_method, axis=0)
+            save_fig_path = os.path.join(output_curr_time_dir, f'opt_{cur_optimization}_losses.png')
+            plot_losses(average_losses, save_fig_path)
+    a=0
 
 
 def tag_odd_even(labels):
@@ -37,6 +57,7 @@ def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name
     num_of_pixels = 28 * 28
 
     w = torch.randn(num_of_pixels)  # initialization
+    losses = []
 
     tagging_method = which_tagging_method(binary_problem_name)
     opt, batch_size = which_opt(optimization_name, w)
@@ -50,7 +71,10 @@ def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name
             labels[labels < 1] = -1
             outputs = samples @ w
             w, loss = opt.step(outputs, labels, samples)
+            losses.append(float(loss))
             print('loss = {}'.format(loss))
+
+    return losses, w
 
 
 def which_opt(optimization_name, w):
@@ -82,3 +106,10 @@ def which_tagging_method(binary_problem_name):
     elif binary_problem_name == 'is_in_my_bd_date':
         tagging_method = tag_bd_date
     return tagging_method
+
+
+def plot_losses(losses, save_fig_path):
+    plt.figure()
+    plt.plot(np.arange(1, len(losses)+1), losses)
+    # plt.show(block=False)
+    plt.savefig(save_fig_path)
