@@ -12,7 +12,7 @@ def experiment_A(mnist_data_set, binary_problems, optimization):
     for cur_binary_problem in binary_problems:
         for cur_optimization in optimization:
             for ii in range(NUM_OF_ITERATION):
-                run_single_experiment(mnist_data_set, cur_binary_problem, cur_optimization)
+                w, losses = run_single_experiment(mnist_data_set, cur_binary_problem, cur_optimization)
 
 
 def tag_odd_even(labels):
@@ -51,21 +51,23 @@ def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name
             w, loss = opt.step(outputs, labels, samples)
             print('loss = {}'.format(loss))
 
+    a=0
+
 
 def which_opt(optimization_name, w):
     if optimization_name == 'gd':
         opt = Optimizer(w, lr=LR)
-        batch_size = 32
+        batch_size = 70000
     elif optimization_name == 'constrained_gd':
         # todo: make sure k=1 is alright and maybe change it
         opt = Optimizer(w, lr=LR, K=1)
-        batch_size = 32
+        batch_size = 70000
     elif optimization_name == 'regularized_gd':
         opt = Optimizer(w, lr=LR, reg=0.035)
-        batch_size = 32
+        batch_size = 70000
     elif optimization_name == 'sgd':
         opt = Optimizer(w, lr=LR)
-        batch_size = 70000
+        batch_size = 32
     else:
         print(f'optimization name invalid - {optimization_name}\n'
               f'The options are - [gd, constrained_gd, regularized_gd, sgd]')
