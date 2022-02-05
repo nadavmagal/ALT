@@ -12,7 +12,8 @@ def experiment_A(mnist_data_set, binary_problems, optimization):
     for cur_binary_problem in binary_problems:
         for cur_optimization in optimization:
             for ii in range(NUM_OF_ITERATION):
-                run_single_experiment(mnist_data_set, cur_binary_problem, cur_optimization)
+                train_set, test_set = torch.utils.data.random_split(mnist_data_set, [60000, 10000])
+                run_single_experiment(train_set, cur_binary_problem, cur_optimization)
 
 
 def tag_odd_even(labels):
