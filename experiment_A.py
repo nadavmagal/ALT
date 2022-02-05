@@ -35,13 +35,10 @@ def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name
 
     w = torch.randn(num_of_pixels)  # initialization
 
-    data_loader = torch.utils.data.DataLoader(mnist_data_set, batch_size=70000, shuffle=True)
-
     tagging_method = which_tagging_method(binary_problem_name)
+    opt, batch_size = which_opt(optimization_name, w)
 
-
-    opt = which_opt(optimization_name, w)
-
+    data_loader = torch.utils.data.DataLoader(mnist_data_set, batch_size=batch_size, shuffle=True)
 
     for e in range(NUM_OF_EPOCHES):
         for samples, labels in data_loader:
@@ -56,13 +53,17 @@ def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name
 def which_opt(optimization_name, w):
     if optimization_name == 'gd':
         opt = Optimizer(w, lr=LR)
+        batch_size = 32
     elif optimization_name == 'constrained_gd':
         opt = Optimizer(w, lr=LR)
+        batch_size = 32
     elif optimization_name == 'regularized_gd':
         opt = Optimizer(w, lr=LR)
+        batch_size = 32
     elif optimization_name == 'sgd':
         opt = Optimizer(w, lr=LR)
-    return opt
+        batch_size = 70000
+    return opt, batch_size
 
 
 def which_tagging_method(binary_problem_name):
