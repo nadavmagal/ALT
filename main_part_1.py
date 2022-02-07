@@ -6,13 +6,13 @@ import time
 
 
 def main():
-    binary_problems = ['odd_even', 'is_big_from_5', 'is_in_my_bd_date']
-    optimization = ['gd', 'constrained_gd', 'regularized_gd', 'sgd']
+    #binary_problems = ['odd_even', 'is_big_from_5', 'is_in_my_bd_date']
+    #optimization = ['gd', 'constrained_gd', 'regularized_gd', 'sgd']
 
     mnist_data_fp = './mnist'
     mnist_data_set = get_mnist_data(mnist_data_fp)
 
-    experiment_A(mnist_data_set, binary_problems, optimization)
+    experiment_A(mnist_data_set)
     # experiment_B(mnist_data_set, binary_problems, optimization)
 
     return

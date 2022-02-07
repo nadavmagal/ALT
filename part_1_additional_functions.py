@@ -25,11 +25,11 @@ def get_mnist_data(mnist_data_fp):
 
 # TODO: maybe
 class Optimizer:
-    def __init__(self, w, lr, K=None, reg=0.0):
+    def __init__(self, w, hyper_params):
         self.w = w
-        self.lr = lr
-        self.reg = reg
-        self.K = K
+        self.lr = hyper_params.learning_rate
+        self.reg = hyper_params.reg
+        self.K = hyper_params.k
         self.loss = HingeLoss()
 
     def step(self, t, y, X):
