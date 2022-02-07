@@ -22,12 +22,14 @@ def experiment_A(mnist_data_set):
     for cur_binary_problem in optimizer_config.BinaryProblem:
         print(f'========= starting work on binary problem: {cur_binary_problem.name} =============')
         for cur_optimization in optimizer_config.OptimizerOptions:
+            print(f'--------------- optimization: {cur_optimization.name} ---------------')
             hyper_params_options = 1
             if cur_optimization == optimizer_config.OptimizerOptions.RegularizedGD:
-                hyper_params_options = len(optimizer_config.RGD_different_params_list)
+                hyper_params_options = len(optimizer_config.GD_type_to_params_dic[optimizer_config.OptimizerOptions.RegularizedGD])
             for hyper_params_idx in range(hyper_params_options):
-                print(f'--------------- optimization: {cur_optimization.name} ---------------')
                 losses_per_optimiation_method = np.zeros((NUM_OF_ITERATION, NUM_OF_EPOCHES))
+                if cur_optimization == optimizer_config.OptimizerOptions.RegularizedGD:
+                    print(f'----- Hyper Params Option: {hyper_params_idx+1} -----')
                 for ii in range(NUM_OF_ITERATION):
                     print(f'--> iteration number {ii + 1}:')
                     train_set, test_set = torch.utils.data.random_split(mnist_data_set, [60000, 10000])
@@ -39,7 +41,7 @@ def experiment_A(mnist_data_set):
                 plot_losses(average_losses, save_fig_path)
 
 
-def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name, rgd_hyper_params):
+def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name, rgd_hyper_params_idx):
     num_of_pixels = 28 * 28
 
     w = torch.randn(num_of_pixels)  # initialization
@@ -48,8 +50,7 @@ def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name
     tagging_method = optimizer_config.binary_type_to_function_dic[binary_problem_name]
     if optimization_name == optimizer_config.OptimizerOptions.RegularizedGD:
         # run different hyper params for RGD (q3)
-        print(f'--------------- Hyper Params Option: {rgd_hyper_params} ---------------')
-        opt, batch_size = init_rgd_optimizer(optimizer_config.RGD_different_params_list[rgd_hyper_params], w)
+        opt, batch_size = init_rgd_optimizer(rgd_hyper_params_idx, w)
     else:
         opt, batch_size = init_optimizer(optimization_name, w)
 
@@ -75,7 +76,8 @@ def init_optimizer(optimization_name, w):
     return opt, hyper_params.batch_size
 
 
-def init_rgd_optimizer(hyper_params, w):
+def init_rgd_optimizer(hyper_params_idx, w):
+    hyper_params = optimizer_config.GD_type_to_params_dic[optimizer_config.OptimizerOptions.RegularizedGD][hyper_params_idx]
     opt = Optimizer(w, hyper_params)
     return opt, hyper_params.batch_size
 

@@ -24,7 +24,10 @@ class OptimizerHyperParams:
 GD_type_to_params_dic = {
     OptimizerOptions.GD: OptimizerHyperParams(OptimizerOptions.GD, 0.1),
     OptimizerOptions.ConstrainedGD: OptimizerHyperParams(OptimizerOptions.ConstrainedGD, 0.1, k=1),
-    OptimizerOptions.RegularizedGD: OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.1, reg=0.035),
+    OptimizerOptions.RegularizedGD: [OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.1, reg=0.035),
+                                     OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.2, reg=0.035),
+                                     OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.3, reg=0.035),
+                                     OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.1, reg=0.06)]     ,
     OptimizerOptions.SGD: OptimizerHyperParams(OptimizerOptions.SGD, 0.1)
 }
 
@@ -41,10 +44,3 @@ binary_type_to_function_dic = {
     BinaryProblem.IS_MY_BDAY: binary_problems.tag_bd_date,
 }
 
-# TODO: change this according to q3
-RGD_different_params_list = [
-    OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.1, reg=0.035),
-    OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.2, reg=0.035),
-    OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.3, reg=0.035),
-    OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.1, reg=0.06),
-]
