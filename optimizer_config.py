@@ -7,6 +7,7 @@ class OptimizerOptions(Enum):
     ConstrainedGD = 1,
     RegularizedGD = 2,
     SGD = 3,
+    RegularizedGD_3 = 4,
 
 
 class OptimizerHyperParams:
@@ -22,13 +23,13 @@ class OptimizerHyperParams:
 
 
 GD_type_to_params_dic = {
-    OptimizerOptions.GD: OptimizerHyperParams(OptimizerOptions.GD, 0.1),
-    OptimizerOptions.ConstrainedGD: OptimizerHyperParams(OptimizerOptions.ConstrainedGD, 0.1, k=1),
-    OptimizerOptions.RegularizedGD: [OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.1, reg=0.035),
-                                     OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.2, reg=0.035),
-                                     OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.3, reg=0.035),
-                                     OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.1, reg=0.06)]     ,
-    OptimizerOptions.SGD: OptimizerHyperParams(OptimizerOptions.SGD, 0.1)
+    OptimizerOptions.GD: [OptimizerHyperParams(OptimizerOptions.GD, 0.1)],
+    OptimizerOptions.ConstrainedGD: [OptimizerHyperParams(OptimizerOptions.ConstrainedGD, 0.1, k=1)],
+    OptimizerOptions.RegularizedGD: [OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.1, reg=0.035)],
+    OptimizerOptions.SGD: [OptimizerHyperParams(OptimizerOptions.SGD, 0.1)],
+    OptimizerOptions.RegularizedGD_3: [OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.2, reg=0.035),
+                                       OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.3, reg=0.035),
+                                       OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.1, reg=0.06)]
 }
 
 
@@ -43,4 +44,3 @@ binary_type_to_function_dic = {
     BinaryProblem.BIGGER_THAN_5: binary_problems.tag_is_big_from_5,
     BinaryProblem.IS_MY_BDAY: binary_problems.tag_bd_date,
 }
-
