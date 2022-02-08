@@ -2,10 +2,12 @@ import numpy as np
 # import matplotlib
 # matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
+
+from ALT import optimizer_config
 from part_1_additional_functions import *
 import os
 from datetime import datetime
-from experiment_A import which_tagging_method, which_opt
+from experiment_A import init_rgd_optimizer
 
 NUM_OF_ITERATION = 10
 NUM_OF_EPOCHES = 1000
@@ -37,7 +39,12 @@ def run_single_experiment(train_set, test_set, binary_problem_name, optimization
     w = torch.randn(num_of_pixels)  # initialization
     losses = []
 
-    tagging_method = which_tagging_method(binary_problem_name)
+    tagging_method = optimizer_config.binary_type_to_function_dic[binary_problem_name](binary_problem_name)
+    if optimization_name == optimizer_config.OptimizerOptions.RegularizedGD:
+        # run different hyper params for RGD (q3)
+        opt, batch_size = init_rgd_optimizer(rgd_hyper_params_idx, w)
+    else:
+        opt, batch_size = init_optimizer(optimization_name, w)
     opt, batch_size = which_opt(optimization_name, w)
 
     train_loader = torch.utils.data.DataLoader(train_set, batch_size=batch_size, shuffle=True)
@@ -57,4 +64,3 @@ def run_single_experiment(train_set, test_set, binary_problem_name, optimization
 
     return losses, w
 
-    return None, None
