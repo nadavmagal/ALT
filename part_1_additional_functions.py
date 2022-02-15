@@ -4,6 +4,7 @@ import torch
 from torch import nn
 from torchvision import datasets, transforms
 
+
 def get_mnist_data(mnist_data_fp):
     input_transforms = transforms.Compose([
         transforms.ToTensor(),
@@ -35,6 +36,7 @@ class Optimizer:
         self.reg = hyper_params.reg
         self.K = hyper_params.k
         self.loss = MeanSquareError()
+        # self.loss = HingeLoss()
 
     def step(self, t, y, X):
         """
@@ -52,7 +54,7 @@ class Optimizer:
         return w, l
 
 
-'''# TODO: maybe
+# TODO: maybe
 class HingeLoss:
     def __init__(self):
         return
@@ -77,7 +79,7 @@ class HingeLoss:
         """
         m = X.shape[0]
         X[t * y > 1, :] = 0
-        return -1 / m * X.T @ y.type_as(X)'''
+        return -1 / m * X.T @ y.type_as(X)
 
 
 class MeanSquareError:
@@ -101,8 +103,7 @@ class MeanSquareError:
         :param X: [m,d]
         :return: grad
         """
-        return 2*(t-y) @ X
-
+        return 2*(t-y) @ X / X.shape[0]
 
 
 class LinearModel(nn.Module):
@@ -114,3 +115,13 @@ class LinearModel(nn.Module):
         # X is [m,d]
         # m - batch size, d - sample size
         return X @ self
+
+
+def calc_zero_one_loss(t, y):
+    """
+    :param t: prediction
+    :param y: label
+    :return: loss
+    """
+    correct = len(np.where(abs(t - y) <= 1)[0])
+    return correct / t.shape[0]
