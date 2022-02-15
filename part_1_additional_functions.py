@@ -30,7 +30,7 @@ class Optimizer:
         self.lr = hyper_params.learning_rate
         self.reg = hyper_params.reg
         self.K = hyper_params.k
-        self.loss = HingeLoss()
+        self.loss = MeanSquareError()
 
     def step(self, t, y, X):
         """
@@ -48,7 +48,7 @@ class Optimizer:
         return w, l
 
 
-# TODO: maybe
+'''# TODO: maybe
 class HingeLoss:
     def __init__(self):
         return
@@ -73,7 +73,32 @@ class HingeLoss:
         """
         m = X.shape[0]
         X[t * y > 1, :] = 0
-        return -1 / m * X.T @ y.type_as(X)
+        return -1 / m * X.T @ y.type_as(X)'''
+
+
+class MeanSquareError:
+    def __init__(self):
+        return
+
+    @staticmethod
+    def calc_loss(t, y):
+        """
+        :param t: prediction
+        :param y: label
+        :return: loss
+        """
+        return (t-y).square().mean()
+
+    @staticmethod
+    def grad(t, y, X):
+        """
+        :param t: [m,1]
+        :param y: [m,1]
+        :param X: [m,d]
+        :return: grad
+        """
+        return 2*(t-y) @ X
+
 
 
 class LinearModel(nn.Module):
