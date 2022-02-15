@@ -7,8 +7,8 @@ import os
 from datetime import datetime
 from optimizer_config import BinaryProblem, OptimizerOptions, GD_type_to_params_dic, binary_type_to_function_dic
 
-NUM_OF_ITERATION = 3
-NUM_OF_EPOCHES = 3
+NUM_OF_ITERATION = 10
+NUM_OF_EPOCHES = 500
 
 
 def experiment_A(mnist_data_set):
