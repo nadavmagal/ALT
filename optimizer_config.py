@@ -1,5 +1,5 @@
 from enum import Enum
-import binary_problems
+from binary_problems import tag_odd_even, tag_bd_date, tag_is_big_from_5
 
 
 class OptimizerOptions(Enum):
@@ -12,7 +12,7 @@ class OptimizerOptions(Enum):
 
 class OptimizerHyperParams:
     def __init__(self, gd_type, lr, k=None, reg=0.0):
-        self.type = type
+        self.opt_type = gd_type
         self.learning_rate = lr
         self.k = k
         self.reg = reg
@@ -40,7 +40,7 @@ class BinaryProblem(Enum):
 
 
 binary_type_to_function_dic = {
-    BinaryProblem.ODD_EVEN: binary_problems.tag_odd_even,
-    BinaryProblem.BIGGER_THAN_5: binary_problems.tag_is_big_from_5,
-    BinaryProblem.IS_MY_BDAY: binary_problems.tag_bd_date,
+    BinaryProblem.ODD_EVEN: tag_odd_even,
+    BinaryProblem.BIGGER_THAN_5: tag_is_big_from_5,
+    BinaryProblem.IS_MY_BDAY: tag_bd_date,
 }
