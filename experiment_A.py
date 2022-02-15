@@ -29,8 +29,7 @@ def experiment_A(mnist_data_set):
                     print(f'----- Hyper Params Option: {hyper_params_idx + 1} -----')
                 for ii in range(NUM_OF_ITERATION):
                     print(f'--> iteration number {ii + 1}:')
-                    train_set, test_set = torch.utils.data.random_split(mnist_data_set, [60000, 10000])
-                    losses, w = run_single_experiment(train_set, cur_binary_problem, cur_optimization, hyper_params_idx)
+                    losses, w = run_single_experiment(mnist_data_set, cur_binary_problem, cur_optimization, hyper_params_idx)
                     losses_per_optimiation_method[ii, :] = np.array(losses)
 
                 average_losses = np.mean(losses_per_optimiation_method, axis=0)
@@ -46,6 +45,8 @@ def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name
 
     tagging_method = optimizer_config.binary_type_to_function_dic[binary_problem_name]
     opt, batch_size = init_optimizer(rgd_hyper_params_idx, w)
+
+    train_set, test_set = torch.utils.data.random_split(mnist_data_set, [60000, 10000])
     data_loader = torch.utils.data.DataLoader(mnist_data_set, batch_size=batch_size, shuffle=True)
 
     for e in range(NUM_OF_EPOCHES):
