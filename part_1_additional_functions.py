@@ -4,18 +4,22 @@ import torch
 from torch import nn
 from torchvision import datasets, transforms
 
-
 def get_mnist_data(mnist_data_fp):
+    input_transforms = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize(0.5, 0.5),
+        transforms.Lambda(lambda cur_x: cur_x / (cur_x ** 2).sum(dim=(1, 2), keepdim=True).sqrt())
+    ])
     # load dataset
     train_set = datasets.MNIST(root=mnist_data_fp,
                                train=True,
                                download=True,
-                               transform=transforms.ToTensor())
+                               transform=input_transforms)
 
     test_set = datasets.MNIST(root=mnist_data_fp,
                               train=False,
                               download=True,
-                              transform=transforms.ToTensor())
+                              transform=input_transforms)
 
     # combine datasets
     combined_dataset = [train_set, test_set]
