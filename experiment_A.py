@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from part_1_additional_functions import *
 import os
 from datetime import datetime
-import optimizer_config
+from optimizer_config import BinaryProblem, OptimizerOptions, GD_type_to_params_dic, binary_type_to_function_dic
 
 NUM_OF_ITERATION = 1
 NUM_OF_EPOCHES = 1
@@ -18,14 +18,14 @@ def experiment_A(mnist_data_set):
     os.makedirs(output_dir, exist_ok=True)
     os.makedirs(output_curr_time_dir)
 
-    for cur_binary_problem in optimizer_config.BinaryProblem:
+    for cur_binary_problem in BinaryProblem:
         print(f'========= starting work on binary problem: {cur_binary_problem.name} =============')
-        for cur_optimization in optimizer_config.OptimizerOptions:
+        for cur_optimization in OptimizerOptions:
             print(f'--------------- optimization: {cur_optimization.name} ---------------')
-            hyper_params_options = len(optimizer_config.GD_type_to_params_dic[cur_optimization])
-            for hyper_params_idx in range(hyper_params_options):
+            len_of_hyper_params_options = len(GD_type_to_params_dic[cur_optimization])
+            for hyper_params_idx in range(len_of_hyper_params_options):
                 losses_per_optimiation_method = np.zeros((NUM_OF_ITERATION, NUM_OF_EPOCHES))
-                if cur_optimization == optimizer_config.OptimizerOptions.RegularizedGD:
+                if cur_optimization == OptimizerOptions.RegularizedGD:
                     print(f'----- Hyper Params Option: {hyper_params_idx + 1} -----')
                 for ii in range(NUM_OF_ITERATION):
                     print(f'--> iteration number {ii + 1}:')
@@ -44,8 +44,8 @@ def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name
     w = torch.randn(num_of_pixels)  # initialization
     losses = []  # resulted loss in each iteration
 
-    tagging_method = optimizer_config.binary_type_to_function_dic[binary_problem_name]
-    opt, batch_size = init_optimizer(rgd_hyper_params_idx, w)
+    tagging_method = binary_type_to_function_dic[binary_problem_name]
+    opt, batch_size = init_optimizer(optimization_name, rgd_hyper_params_idx, w)
     data_loader = torch.utils.data.DataLoader(mnist_data_set, batch_size=batch_size, shuffle=True)
 
     for e in range(NUM_OF_EPOCHES):
@@ -62,8 +62,8 @@ def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name
     return losses, w
 
 
-def init_optimizer(hyper_params_idx, w):
-    hyper_params = optimizer_config.GD_type_to_params_dic[optimizer_config.OptimizerOptions.RegularizedGD][hyper_params_idx]
+def init_optimizer(optimization_name, hyper_params_idx, w):
+    hyper_params = GD_type_to_params_dic[optimization_name][hyper_params_idx]
     opt = Optimizer(w, hyper_params)
     return opt, hyper_params.batch_size
 
