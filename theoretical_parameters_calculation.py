@@ -1,7 +1,12 @@
 import torch
 
 def calculate_theoretical_hyperparameters(mnist_data_set):
-    alpha, beta = calculate_alpha_and_beta(mnist_data_set)
+    ''' split data to train and test '''
+    train_set, test_set = torch.utils.data.random_split(mnist_data_set, [60000, 10000])
+
+    alpha, beta = calculate_alpha_and_beta(train_set)
+    print(f'{alpha=}')
+    print(f'{beta=}')
 
     ''' GD '''
     gd_eta = 1/beta
