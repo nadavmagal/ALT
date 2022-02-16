@@ -77,7 +77,7 @@ def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name
             w, loss = opt.step(outputs, labels, samples)
             print('loss = {}'.format(loss))
             steps_loss.append(loss.cpu().detach().numpy())
-        train_losses.append(torch.mean(torch.stack(steps_loss)))
+        train_losses.append(np.mean(steps_loss))
 
         steps_test_losses = []
         steps_test_acc = []
