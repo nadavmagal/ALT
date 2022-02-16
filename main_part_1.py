@@ -6,7 +6,7 @@ from part_1_additional_functions import *
 from experiment_A import experiment_A
 import time
 
-CALCULATE_THEORETICAL_HYPER_PARAMS = True
+CALCULATE_THEORETICAL_HYPER_PARAMS = False
 
 
 def main_part_1():

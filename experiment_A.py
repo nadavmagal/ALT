@@ -52,9 +52,12 @@ def experiment_A(mnist_data_set):
 
 
 def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name, rgd_hyper_params_idx):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f'available processor: {device}')
+
     num_of_pixels = 28 * 28
 
-    w = torch.randn(num_of_pixels)  # initialization
+    w = torch.randn(num_of_pixels, device=device)  # initialization
     train_losses = []  # resulted loss in each iteration
     test_losses = []
     test_accuracies = []
@@ -68,8 +71,8 @@ def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name
     for e in range(NUM_OF_EPOCHS):
         steps_loss = []
         for samples, labels in train_loader:
-            samples = samples.view(-1, num_of_pixels)
-            labels = tagging_method(labels)
+            samples = samples.view(-1, num_of_pixels).to(device)
+            labels = tagging_method(labels).to(device)
             outputs = samples @ w
             w, loss = opt.step(outputs, labels, samples)
             print('loss = {}'.format(loss))
@@ -79,8 +82,8 @@ def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name
         steps_test_losses = []
         steps_test_acc = []
         for test_samples, test_labels in test_loader:
-            test_samples = test_samples.view(-1, num_of_pixels)
-            test_labels = tagging_method(test_labels)
+            test_samples = test_samples.view(-1, num_of_pixels).to(device)
+            test_labels = tagging_method(test_labels).to(device)
             test_outputs = test_samples @ w
             test_loss = opt.loss.calc_loss(test_outputs, test_labels) + opt.reg * (opt.w ** 2).sum()
             test_acc = calc_zero_one_loss(test_outputs, test_labels)
