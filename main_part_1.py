@@ -9,7 +9,7 @@ import time
 CALCULATE_THEORETICAL_HYPER_PARAMS = True
 
 
-def main():
+def main_part_1():
     #binary_problems = ['odd_even', 'is_big_from_5', 'is_in_my_bd_date']
     #optimization = ['gd', 'constrained_gd', 'regularized_gd', 'sgd']
 
