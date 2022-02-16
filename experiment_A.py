@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from part_1_additional_functions import *
 import os
 from datetime import datetime
-from optimizer_config import BinaryProblem, OptimizerOptions, GD_type_to_params_dic, binary_type_to_function_dic
+from optimizer_config_2 import BinaryProblem, OptimizerOptions, GD_type_to_params_dic, binary_type_to_function_dic
 
 NUM_OF_ITERATION = 10
 NUM_OF_EPOCHS = 500

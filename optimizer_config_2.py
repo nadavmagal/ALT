@@ -23,13 +23,13 @@ class OptimizerHyperParams:
 
 
 GD_type_to_params_dic = {
-    OptimizerOptions.GD: [OptimizerHyperParams(OptimizerOptions.GD, 0.66)],
+    OptimizerOptions.GD: [OptimizerHyperParams(OptimizerOptions.GD, 0.7)],
     OptimizerOptions.ConstrainedGD: [OptimizerHyperParams(OptimizerOptions.ConstrainedGD, 0.05, k=1)],
     OptimizerOptions.RegularizedGD: [OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.61, reg=0.035)],
     OptimizerOptions.SGD: [OptimizerHyperParams(OptimizerOptions.SGD, 0.96)],
-    OptimizerOptions.RegularizedGD_3: [OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.2, reg=0.035),
-                                       OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.3, reg=0.035),
-                                       OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.1, reg=0.06)]
+    OptimizerOptions.RegularizedGD_3: [OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.7, reg=0.035),
+                                       OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.5, reg=0.035),
+                                       OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.5, reg=0.06)]
 }
 
 
