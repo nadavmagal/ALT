@@ -76,7 +76,7 @@ def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name
             outputs = samples @ w
             w, loss = opt.step(outputs, labels, samples)
             print('loss = {}'.format(loss))
-            steps_loss.append(loss.cpu())
+            steps_loss.append(loss.cpu().numpy())
         train_losses.append(np.mean(steps_loss))
 
         steps_test_losses = []
@@ -87,8 +87,8 @@ def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name
             test_outputs = test_samples @ w
             test_loss = opt.loss.calc_loss(test_outputs, test_labels) + opt.reg * (opt.w ** 2).sum()
             test_acc = calc_zero_one_loss(test_outputs, test_labels)
-            steps_test_losses.append(test_loss.cpu())
-            steps_test_acc.append(test_acc.cpu())
+            steps_test_losses.append(test_loss.cpu().numpy())
+            steps_test_acc.append(test_acc.cpu().numpy())
         test_losses.append(np.mean(steps_test_losses))
         test_accuracies.append(np.mean(steps_test_acc))
         print(f'acc = {np.mean(steps_test_acc)}')
