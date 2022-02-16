@@ -74,19 +74,9 @@ def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name
             samples = samples.view(-1, num_of_pixels).to(device)
             labels = tagging_method(labels).to(device)
             outputs = samples @ w
-
-
-
-
-
             w, loss = opt.step(outputs, labels, samples)
-            cpu_loss = loss.cpu()
-            print('loss = {}'.format(cpu_loss))
-            steps_loss.append(cpu_loss)
-            a=3
-        a=3
-        print(f'type(steps_loss) = {type(steps_loss)}')
-        print(f'type(steps_loss[0]) = {type(steps_loss[0])}')
+            print('loss = {}'.format(loss.cpu()))
+            steps_loss.append(loss.cpu())
         train_losses.append(np.mean(steps_loss))
 
         steps_test_losses = []
@@ -96,8 +86,8 @@ def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name
             test_labels = tagging_method(test_labels).to(device)
             test_outputs = test_samples @ w
             test_loss = opt.loss.calc_loss(test_outputs, test_labels) + opt.reg * (opt.w ** 2).sum()
-            test_acc = calc_zero_one_loss(test_outputs, test_labels)
-            steps_test_losses.append(test_loss)
+            test_acc = calc_zero_one_loss(test_outputs.cpu(), test_labels.cpu())
+            steps_test_losses.append(test_loss.cpu())
             steps_test_acc.append(test_acc)
         test_losses.append(torch.mean(torch.stack(steps_test_losses)))
         test_accuracies.append(np.mean(steps_test_acc))
