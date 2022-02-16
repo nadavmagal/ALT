@@ -74,6 +74,11 @@ def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name
             samples = samples.view(-1, num_of_pixels).to(device)
             labels = tagging_method(labels).to(device)
             outputs = samples @ w
+
+
+
+
+
             w, loss = opt.step(outputs, labels, samples)
             cpu_loss = loss.cpu()
             print('loss = {}'.format(cpu_loss))
