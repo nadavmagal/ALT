@@ -5,12 +5,12 @@ def calculate_theoretical_hyperparameters(mnist_data_set):
     train_set, test_set = torch.utils.data.random_split(mnist_data_set, [60000, 10000])
 
     alpha, beta = calculate_alpha_and_beta(train_set)
-    print(f'{alpha=}')
-    print(f'{beta=}')
+    print(f'alpha={alpha}')
+    print(f'beta={beta}')
 
     ''' GD '''
     gd_eta = 1/beta
-    print(f'{gd_eta=}')
+    print(f'gd_eta={gd_eta}')
 
     '''  '''
 
