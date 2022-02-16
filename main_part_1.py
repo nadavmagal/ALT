@@ -26,4 +26,4 @@ def main_part_1():
 
 
 if __name__ == "__main__":
-    main()
+    main_part_1()
