@@ -31,7 +31,7 @@ class OptimizerHyperParams:
         if gd_type == OptimizerOptions.SGD:
             self.batch_size = 32
         else:
-            self.batch_size = 70000
+            self.batch_size = data_set_size
         self.loss_function_type = loss_function_type
         self.num_of_epochs = num_of_epochs
         self.data_set_size = data_set_size
