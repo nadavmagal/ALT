@@ -17,7 +17,7 @@ class LossFuncTypes(Enum):
 
 
 class OptimizerHyperParams:
-    def __init__(self, gd_type, lr, k=None, reg=0.0, loss_function_type=LossFuncTypes.square_loss):
+    def __init__(self, gd_type, lr, k=None, reg=0.0, loss_function_type=LossFuncTypes.square_loss, num_of_epochs=500, data_set_size=70000, num_of_iteration=10):
         self.opt_type = gd_type
         self.learning_rate = lr
         self.k = k
@@ -25,8 +25,12 @@ class OptimizerHyperParams:
         if gd_type == OptimizerOptions.SGD:
             self.batch_size = 32
         else:
-            self.batch_size = 70000
+            self.batch_size = data_set_size
         self.loss_function_type = loss_function_type
+        self.num_of_epochs = num_of_epochs
+        self.data_set_size = data_set_size
+        self.num_of_iteration = num_of_iteration
+        self.test_percentage = 1/7
 
 
 GD_type_to_params_dic = {
@@ -38,9 +42,12 @@ GD_type_to_params_dic = {
                                        OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.5, reg=0.035),
                                        OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.5, reg=0.06)],
     OptimizerOptions.GD_part_3: [
-        OptimizerHyperParams(OptimizerOptions.GD, 0.01, loss_function_type=LossFuncTypes.hinge_loss),
-        OptimizerHyperParams(OptimizerOptions.GD, 0.01, loss_function_type=LossFuncTypes.hinge_loss),
-        OptimizerHyperParams(OptimizerOptions.GD, 0.01, loss_function_type=LossFuncTypes.hinge_loss)]
+        OptimizerHyperParams(OptimizerOptions.GD, 0.01, loss_function_type=LossFuncTypes.hinge_loss, num_of_epochs=500,
+                             data_set_size=70000, num_of_iteration=1),
+        OptimizerHyperParams(OptimizerOptions.GD, 0.01, loss_function_type=LossFuncTypes.hinge_loss, num_of_epochs=500,
+                             data_set_size=70000, num_of_iteration=1),
+        OptimizerHyperParams(OptimizerOptions.GD, 0.01, loss_function_type=LossFuncTypes.hinge_loss, num_of_epochs=500,
+                             data_set_size=70000, num_of_iteration=1)]
 }
 
 
