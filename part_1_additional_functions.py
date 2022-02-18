@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import torch
 from torch import nn
 from torchvision import datasets, transforms
-
+from optimizer_config import LossFuncTypes
 
 def get_mnist_data(mnist_data_fp):
     input_transforms = transforms.Compose([
@@ -35,8 +35,17 @@ class Optimizer:
         self.lr = hyper_params.learning_rate
         self.reg = hyper_params.reg
         self.K = hyper_params.k
-        self.loss = MeanSquareError()
-        # self.loss = HingeLoss()
+        self.loss = self._set_loss_funciton(hyper_params)
+
+    @staticmethod
+    def _set_loss_funciton(hyper_params):
+        if hyper_params.loss_function_type == LossFuncTypes.square_loss:
+            loss = MeanSquareError()
+        elif hyper_params.loss_function_type == LossFuncTypes.hinge_loss:
+            loss = HingeLoss()
+        else:
+            loss = None
+        return loss
 
     def step(self, t, y, X):
         """

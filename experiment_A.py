@@ -5,10 +5,8 @@ import matplotlib.pyplot as plt
 from part_1_additional_functions import *
 import os
 from datetime import datetime
-from optimizer_config_2 import BinaryProblem, OptimizerOptions, GD_type_to_params_dic, binary_type_to_function_dic
+from optimizer_config import BinaryProblem, OptimizerOptions, GD_type_to_params_dic, binary_type_to_function_dic
 
-NUM_OF_ITERATION = 10
-NUM_OF_EPOCHS = 500
 
 
 def experiment_A(mnist_data_set):
@@ -16,7 +14,7 @@ def experiment_A(mnist_data_set):
     output_dir = 'output'
     output_curr_time_dir = os.path.join(output_dir, curr_time_str)
     os.makedirs(output_dir, exist_ok=True)
-    os.makedirs(output_curr_time_dir)
+    os.makedirs(output_curr_time_dir, exist_ok=True)
 
     for cur_binary_problem in BinaryProblem:
         print(f'========= starting work on binary problem: {cur_binary_problem.name} =============')
@@ -24,14 +22,16 @@ def experiment_A(mnist_data_set):
             print(f'--------------- optimization: {cur_optimization.name} ---------------')
             len_of_hyper_params_options = len(GD_type_to_params_dic[cur_optimization])
             for hyper_params_idx in range(len_of_hyper_params_options):
-                losses_per_optimization_method = np.zeros((NUM_OF_ITERATION, NUM_OF_EPOCHS))
-                test_losses_per_optimization_method = np.zeros((NUM_OF_ITERATION, NUM_OF_EPOCHS))
-                test_accuracy_per_optimization_method = np.zeros((NUM_OF_ITERATION, NUM_OF_EPOCHS))
+                cur_hyper_params = GD_type_to_params_dic[cur_optimization][hyper_params_idx]
+                losses_per_optimization_method = np.zeros((cur_hyper_params.num_of_iteration, cur_hyper_params.num_of_epochs))
+                test_losses_per_optimization_method = np.zeros((cur_hyper_params.num_of_iteration, cur_hyper_params.num_of_epochs))
+                test_accuracy_per_optimization_method = np.zeros((cur_hyper_params.num_of_iteration, cur_hyper_params.num_of_epochs))
+                subset_mnist_data_set = torch.utils.data.Subset(mnist_data_set, range(0,cur_hyper_params.data_set_size))
                 if cur_optimization == OptimizerOptions.RegularizedGD:
                     print(f'----- Hyper Params Option: {hyper_params_idx + 1} -----')
-                for ii in range(NUM_OF_ITERATION):
+                for ii in range(cur_hyper_params.num_of_iteration):
                     print(f'--> iteration number {ii + 1}:')
-                    losses, test_losses, test_accuracies = run_single_experiment(mnist_data_set, cur_binary_problem, cur_optimization, hyper_params_idx)
+                    losses, test_losses, test_accuracies = run_single_experiment(subset_mnist_data_set, cur_binary_problem, cur_optimization, hyper_params_idx, cur_hyper_params)
                     losses_per_optimization_method[ii, :] = np.array(losses)
                     test_losses_per_optimization_method[ii, :] = np.array(test_losses)
                     test_accuracy_per_optimization_method[ii, :] = np.array(test_accuracies)
@@ -51,7 +51,7 @@ def experiment_A(mnist_data_set):
                 save_losses_arrays(average_losses, test_average_losses, test_average_acc, output_curr_time_dir, f'{cur_optimization.name}_{hyper_params_idx}')
 
 
-def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name, rgd_hyper_params_idx):
+def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name, rgd_hyper_params_idx, cur_hyper_params):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f'available processor: {device}')
 
@@ -64,11 +64,14 @@ def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name
 
     tagging_method = binary_type_to_function_dic[binary_problem_name]
     opt, batch_size = init_optimizer(optimization_name, rgd_hyper_params_idx, w)
-    train_set, test_set = torch.utils.data.random_split(mnist_data_set, [60000, 10000])
+    data_set_size = len(mnist_data_set)
+    test_size = int(data_set_size * cur_hyper_params.test_percentage)
+    train_size = data_set_size - test_size
+    train_set, test_set = torch.utils.data.random_split(mnist_data_set, [train_size, test_size])
     train_loader = torch.utils.data.DataLoader(train_set, batch_size=batch_size, shuffle=True)
     test_loader = torch.utils.data.DataLoader(test_set, batch_size=100, shuffle=True)
 
-    for e in range(NUM_OF_EPOCHS):
+    for e in range(cur_hyper_params.num_of_epochs):
         steps_loss = []
         for samples, labels in train_loader:
             samples = samples.view(-1, num_of_pixels).to(device)

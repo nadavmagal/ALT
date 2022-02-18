@@ -8,10 +8,22 @@ class OptimizerOptions(Enum):
     RegularizedGD = 2,
     SGD = 3,
     RegularizedGD_3 = 4,
+    GD_part_3 = 5
+
+
+class LossFuncTypes(Enum):
+    square_loss = 0
+    hinge_loss = 1
+
+
+class HyperParams:
+    def __init__(self, opt_hyp_par):
+        self.batch
+        self.opt_hyp_par = opt_hyp_par
 
 
 class OptimizerHyperParams:
-    def __init__(self, gd_type, lr, k=None, reg=0.0):
+    def __init__(self, gd_type, lr, k=None, reg=0.0, loss_function_type=LossFuncTypes.square_loss, num_of_epochs=500, data_set_size=70000, num_of_iteration=10):
         self.opt_type = gd_type
         self.learning_rate = lr
         self.k = k
@@ -20,6 +32,11 @@ class OptimizerHyperParams:
             self.batch_size = 32
         else:
             self.batch_size = 70000
+        self.loss_function_type = loss_function_type
+        self.num_of_epochs = num_of_epochs
+        self.data_set_size = data_set_size
+        self.num_of_iteration = num_of_iteration
+        self.test_percentage = 1/7
 
 
 GD_type_to_params_dic = {
@@ -29,7 +46,11 @@ GD_type_to_params_dic = {
     OptimizerOptions.SGD: [OptimizerHyperParams(OptimizerOptions.SGD, 0.01)],
     OptimizerOptions.RegularizedGD_3: [OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.05, reg=0.035),
                                        OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.001, reg=0.1),
-                                       OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.1, reg=0.06)]
+                                       OptimizerHyperParams(OptimizerOptions.RegularizedGD, 0.1, reg=0.06)],
+    OptimizerOptions.GD_part_3: [
+        OptimizerHyperParams(OptimizerOptions.GD, 0.01, loss_function_type=LossFuncTypes.hinge_loss,num_of_epochs=500, data_set_size=70000, num_of_iteration=1),
+        OptimizerHyperParams(OptimizerOptions.GD, 0.01, loss_function_type=LossFuncTypes.hinge_loss, num_of_epochs=500, data_set_size=70000, num_of_iteration=1),
+        OptimizerHyperParams(OptimizerOptions.GD, 0.01, loss_function_type=LossFuncTypes.hinge_loss, num_of_epochs=500, data_set_size=70000, num_of_iteration=1)]
 }
 
 
