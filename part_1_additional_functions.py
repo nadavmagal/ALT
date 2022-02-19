@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import torch
 from torch import nn
 from torchvision import datasets, transforms
-from optimizer_config import LossFuncTypes
+from optimizer_config_first import LossFuncTypes
 
 def get_mnist_data(mnist_data_fp):
     input_transforms = transforms.Compose([
