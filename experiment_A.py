@@ -27,8 +27,8 @@ def experiment_A(mnist_data_set):
                 test_losses_per_optimization_method = np.zeros((cur_hyper_params.num_of_iteration, cur_hyper_params.num_of_epochs))
                 test_accuracy_per_optimization_method = np.zeros((cur_hyper_params.num_of_iteration, cur_hyper_params.num_of_epochs))
                 subset_mnist_data_set = torch.utils.data.Subset(mnist_data_set, range(0,cur_hyper_params.data_set_size))
-                if cur_optimization == OptimizerOptions.RegularizedGD:
-                    print(f'----- Hyper Params Option: {hyper_params_idx + 1} -----')
+                # if cur_optimization == OptimizerOptions.RegularizedGD:
+                #     print(f'----- Hyper Params Option: {hyper_params_idx + 1} -----')
                 for ii in range(cur_hyper_params.num_of_iteration):
                     print(f'--> iteration number {ii + 1}:')
                     losses, test_losses, test_accuracies = run_single_experiment(subset_mnist_data_set, cur_binary_problem, cur_optimization, hyper_params_idx, cur_hyper_params)
