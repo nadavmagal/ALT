@@ -25,7 +25,8 @@ def get_mnist_data(mnist_data_fp):
     # combine datasets
     combined_dataset = [train_set, test_set]
     data_set = torch.utils.data.ConcatDataset(combined_dataset)
-    return data_set
+    # return data_set
+    return train_set
 
 
 # TODO: maybe

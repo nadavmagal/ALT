@@ -17,8 +17,12 @@ def experiment_A(mnist_data_set):
     os.makedirs(output_curr_time_dir, exist_ok=True)
 
     for cur_binary_problem in BinaryProblem:
+        binary_problem_path = os.path.join(output_curr_time_dir, cur_binary_problem.name)
+        os.makedirs(binary_problem_path)
         print(f'========= starting work on binary problem: {cur_binary_problem.name} =============')
         for cur_optimization in OptimizerOptions:
+            cur_experiment_path = os.path.join(binary_problem_path, cur_optimization.name)
+            os.makedirs(cur_experiment_path)
             print(f'--------------- optimization: {cur_optimization.name} ---------------')
             len_of_hyper_params_options = len(GD_type_to_params_dic[cur_optimization])
             for hyper_params_idx in range(len_of_hyper_params_options):
@@ -37,18 +41,18 @@ def experiment_A(mnist_data_set):
                     test_accuracy_per_optimization_method[ii, :] = np.array(test_accuracies)
 
                 average_losses = np.mean(losses_per_optimization_method, axis=0)
-                save_fig_path = os.path.join(output_curr_time_dir, f'opt_{cur_optimization.name}_{hyper_params_idx}_losses.png')
+                save_fig_path = os.path.join(cur_experiment_path, f'opt_{cur_optimization.name}_{hyper_params_idx}_losses.png')
                 plot_losses(average_losses, save_fig_path)
 
                 test_average_losses = np.mean(test_losses_per_optimization_method, axis=0)
-                test_save_fig_path = os.path.join(output_curr_time_dir, f'opt_{cur_optimization.name}_{hyper_params_idx}_losses_test.png')
+                test_save_fig_path = os.path.join(cur_experiment_path, f'opt_{cur_optimization.name}_{hyper_params_idx}_losses_test.png')
                 plot_losses(test_average_losses, test_save_fig_path, best_val=np.min(test_average_losses))
 
                 test_average_acc = np.mean(test_accuracy_per_optimization_method, axis=0)
-                test_acc_save_fig_path = os.path.join(output_curr_time_dir, f'opt_{cur_optimization.name}_{hyper_params_idx}_acc_test.png')
+                test_acc_save_fig_path = os.path.join(cur_experiment_path, f'opt_{cur_optimization.name}_{hyper_params_idx}_acc_test.png')
                 plot_losses(test_average_acc, test_acc_save_fig_path, best_val=np.max(test_average_acc))
 
-                save_losses_arrays(average_losses, test_average_losses, test_average_acc, output_curr_time_dir, f'{cur_optimization.name}_{hyper_params_idx}')
+                save_losses_arrays(average_losses, test_average_losses, test_average_acc, cur_experiment_path, f'{cur_optimization.name}_{hyper_params_idx}')
 
 
 def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name, rgd_hyper_params_idx, cur_hyper_params):
@@ -72,13 +76,13 @@ def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name
     test_loader = torch.utils.data.DataLoader(test_set, batch_size=100, shuffle=True)
 
     for e in range(cur_hyper_params.num_of_epochs):
+        print(f'------- Starting epoch={e} -------')
         steps_loss = []
         for samples, labels in train_loader:
             samples = samples.view(-1, num_of_pixels).to(device)
             labels = tagging_method(labels).to(device)
             outputs = samples @ w
             w, loss = opt.step(outputs, labels, samples)
-            print('loss = {}'.format(loss.cpu()))
             steps_loss.append(loss.cpu())
         train_losses.append(np.mean(steps_loss))
 
@@ -94,7 +98,8 @@ def run_single_experiment(mnist_data_set, binary_problem_name, optimization_name
             steps_test_acc.append(test_acc)
         test_losses.append(torch.mean(torch.stack(steps_test_losses)))
         test_accuracies.append(np.mean(steps_test_acc))
-        print(f'acc = {np.mean(steps_test_acc)}')
+
+        print(f'train loss = {np.mean(steps_loss)} | validation acc = {np.mean(steps_test_acc)}')
 
     return train_losses, test_losses, test_accuracies
 
@@ -107,16 +112,17 @@ def init_optimizer(optimization_name, hyper_params_idx, w):
 
 def plot_losses(losses, save_fig_path, best_val=None):
     plt.figure()
-    plt.plot(np.arange(1, len(losses) + 1), losses)
+    plt.plot(np.arange(1, len(losses) + 1), losses, color='green')
     if best_val:
-        plt.title(f'best value is {best_val}')
+        plt.title(f'best value is {np.round(best_val, 5)}')
+    plt.grid()
     plt.savefig(save_fig_path)
 
 
-def save_losses_arrays(average_losses, test_average_losses, test_average_acc, output_curr_time_dir, suffix):
-    train_save_path = os.path.join(output_curr_time_dir, f'opt_{suffix}_losses_train')
+def save_losses_arrays(average_losses, test_average_losses, test_average_acc, output_dir, suffix):
+    train_save_path = os.path.join(output_dir, f'opt_{suffix}_losses_train')
     np.save(train_save_path, average_losses)
-    test_save_path = os.path.join(output_curr_time_dir, f'opt_{suffix}_losses_test')
+    test_save_path = os.path.join(output_dir, f'opt_{suffix}_losses_test')
     np.save(test_save_path, test_average_losses)
-    test_acc_save_path = os.path.join(output_curr_time_dir, f'opt_{suffix}_acc_test')
+    test_acc_save_path = os.path.join(output_dir, f'opt_{suffix}_acc_test')
     np.save(test_acc_save_path, test_average_acc)
