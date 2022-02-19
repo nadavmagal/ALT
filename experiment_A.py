@@ -5,10 +5,10 @@ import matplotlib.pyplot as plt
 from part_1_additional_functions import *
 import os
 from datetime import datetime
-from optimizer_config import BinaryProblem, OptimizerOptions, GD_type_to_params_dic, binary_type_to_function_dic
+from optimizer_config_first import BinaryProblem, OptimizerOptions, GD_type_to_params_dic, binary_type_to_function_dic
 
 NUM_OF_ITERATION = 3
-NUM_OF_EPOCHS = 700
+NUM_OF_EPOCHS = 300
 
 
 def experiment_A(mnist_data_set):
@@ -23,6 +23,9 @@ def experiment_A(mnist_data_set):
         os.makedirs(binary_problem_path)
         print(f'========= starting work on binary problem: {cur_binary_problem.name} =============')
         for cur_optimization in OptimizerOptions:
+            if not cur_optimization.name == 'RegularizedGD_3':
+                print('continuing')
+                continue
             cur_experiment_path = os.path.join(binary_problem_path, cur_optimization.name)
             os.makedirs(cur_experiment_path)
             print(f'--------------- optimization: {cur_optimization.name} ---------------')
